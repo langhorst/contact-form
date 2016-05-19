@@ -65,9 +65,7 @@ func init() {
 }
 
 func main() {
-	fs := http.FileServer(http.Dir("."))
-	http.HandleFunc("/contact/", contact)
-	http.Handle("/", fs)
+	http.HandleFunc("/", contact)
 	fmt.Printf("Listening on :%d\n", cfg.port)
 	http.ListenAndServe(fmt.Sprintf(":%d", cfg.port), nil)
 }
