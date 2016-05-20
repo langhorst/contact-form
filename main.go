@@ -173,6 +173,10 @@ func (m *Message) Validate() bool {
 		m.Errors["from"] = "Please enter a valid email address"
 	}
 
+	if strings.TrimSpace(m.Subject) == "" {
+		m.Errors["subject"] = "Please write a subject"
+	}
+
 	if strings.TrimSpace(m.Body) == "" {
 		m.Errors["body"] = "Please write a message"
 	}
