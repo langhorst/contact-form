@@ -22,13 +22,14 @@ const fallbackHost = "unknown.host.com"
 const RFC2822 = time.RubyDate
 
 var cfg struct {
-	port      int
-	nospam    bool
-	mailhost  string
-	mailuser  string
-	mailpass  string
-	mailport  int
-	destemail string
+	port        int
+	nospam      bool
+	mailhost    string
+	mailuser    string
+	mailpass    string
+	mailport    int
+	destemail   string
+	alloworigin string
 }
 
 func init() {
@@ -39,6 +40,7 @@ func init() {
 	EnvString(&cfg.mailuser, "CONTACT_MAILUSER", "")
 	EnvString(&cfg.mailpass, "CONTACT_MAILPASS", "")
 	EnvString(&cfg.destemail, "CONTACT_DESTEMAIL", "")
+	EnvString(&cfg.alloworigin, "CONTACT_ALLOWORIGIN", "")
 
 	// we want to tread lightly with showing the environ's password potentially
 	// by accident when running the -help, so lets show something else instead
@@ -56,6 +58,7 @@ func init() {
 	flag.StringVar(&cfg.mailuser, "mailuser", cfg.mailuser, "username for mailhost")
 	flag.StringVar(&flagPass, "mailpass", defaultPass, "password for mailhost")
 	flag.StringVar(&cfg.destemail, "destemail", cfg.destemail, "destination mailbox")
+	flag.StringVar(&cfg.alloworigin, "alloworigin", cfg.alloworigin, "Access-Control-Allow-Origin header")
 	flag.Parse()
 
 	// if the password flag was actually set, override cfg with it
@@ -86,6 +89,7 @@ type msi map[string]interface{}
 func contact(w http.ResponseWriter, r *http.Request) {
 	// we are always responding with a json message
 	w.Header().Add("Content-Type", "application/json")
+	w.Header().Add("Access-Control-Allow-Origin", cfg.alloworigin)
 
 	msg := &Message{
 		From:    r.FormValue("from"),
